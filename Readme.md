@@ -23,6 +23,12 @@ npm install
 ### Modify example config file
 
 
+```shell
+cp example.config.json config.json
+vim config.json
+```
+
+
 ### Start the server
 
 
