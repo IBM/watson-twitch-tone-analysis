@@ -1,0 +1,17 @@
+
+{
+
+"watson": {
+  "username": "abcd-fesecebeba-38382b-isisib",
+  "password": "bbsssbbbssbsbs",
+  "version_date": "2016-05-19"
+},
+
+"twitch_identity": {
+  "username": "<twitch:username>",
+  "password": "oauth:abs8uftnibeSOMETOKEN"
+},
+
+"twitch_channels": ["channel1", "channel2"]
+
+}
