@@ -6,3 +6,26 @@ This also demonstrates using the watson api, the twitch api, and websockets.
 
 
 ![Tone Analysis Screenshot](watson-twitch-tone-analysis.png)
+
+
+## Installation
+
+
+### Install libraries
+
+
+
+```shell
+npm install
+```
+
+
+### Modify example config file
+
+
+### Start the server
+
+
+```shell
+node index.js
+```
