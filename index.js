@@ -2,8 +2,9 @@
 // Load Config File
 var config = require('./config.json');
 
-// Load libraries
+// Load libraries; instantiate express app and socket.io
 var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var tmi = require('tmi.js');
@@ -40,8 +41,6 @@ client.on('connected', function(address, port) {
 });
 
 
-// Setup Express (small web server)
-var app = express();
 
 // Serve any files in the 'vendor' directory as static resources
 // This is where js libraries for the client are stored
