@@ -51,6 +51,10 @@ app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/anger', function(req, res){
+  res.sendFile(__dirname + '/anger.html');
+});
+
 // Start the web server on port 3000
 http.listen(3000, function(){
   console.log('listening on *:3000');

@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Watson: Twitch Chat Sentiment Anaysis</title>
+    <style>
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; background-color : transparent;}
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+    </style>
+
+    <style>
+    #chart {
+      position: relative;
+      left: 40px;
+    }
+    #y_axis {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 40px;
+    }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <script src="js/md5.min.js"></script>
+    <script src="js/d3.min.js"></script>
+    <script src="js/d3.layout.min.js"></script>
+    <script src="js/rickshaw.min.js"></script>
+    <!-- bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+
+    <!-- Optional theme -->
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- bootstrap tables -->
+    <!-- Latest compiled and minified CSS -->
+
+
+  </head>
+  <body>
+    <div class="container">
+        <div id="chart-Anger"></div>
+    </div>
+
+    <script>
+      $(function () {
+        var socket = io();
+        $('form').submit(function(){
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+      });
+    </script>
+    <script>
+    var tone_categories = [
+       [ "Anger"]//  "Disgust",  "Fear", "Joy", "Sadness"],
+       //[ "Analytical",  "Confident",  "Tentative"],
+       //[ "Conscientiousness",  "Openness",  "Extraversion", "Agreeableness"]
+    ];
+
+    $(tone_categories).each( function(index,val) {
+      $(val).each( function(jndex,value) {
+        var tone = value;
+        var graph_selector = "#chart-" + tone;
+
+        var tv = 250;
+        var historical_data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        var data = [ { x: 0, y: 0.4 }, { x: 1, y: 0.49 }, { x: 2, y: 0.17 }, { x: 3, y: 0.21 } ];
+        var color = "#" + md5(tone).substr(26); 
+        console.log(color);
+        // create graph
+        var graph = new Rickshaw.Graph( {
+          element: document.querySelector(graph_selector),
+          //width: 900,
+          height: 250,
+          min: 0,
+          max: 1,
+          renderer: 'line',
+          series: new Rickshaw.Series.FixedDuration([{ name: 'one', 'color': color}], undefined, {
+            timeInterval: tv,
+            maxDataPoints: 100,
+            timeBase: new Date().getTime() / 1000
+            })
+        } );
+
+
+
+
+        graph.render();
+
+
+
+        // add some data every so often
+
+        var i = 0;
+        var iv = setInterval( function() {
+
+
+            var sum = 0;
+            $(historical_data).each(function(index, value) {
+              sum += value;
+            });
+            avg = sum / 20.;
+
+            var data = { one: avg};
+
+            graph.series.addData(data);
+            graph.render();
+
+
+        }, tv );
+
+        var socket = io();
+        socket.on('chat message', function(msg){
+          var score = msg['tone_categories'][index]['tones'][jndex]['score']
+          var tone_name = msg['tone_categories'][index]['tones'][jndex]['tone_name']
+          //$('#messages').append($('<li>').text(tone_name + ": " + score));
+          historical_data.shift();
+          historical_data.push(score);
+          var data = { one: score };
+          graph.series.addData(data);
+          graph.render();
+        });
+      });
+    });
+
+    </script>
+
+  </body>
+</html>
