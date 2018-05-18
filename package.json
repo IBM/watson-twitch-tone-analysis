@@ -9,5 +9,8 @@
     "socket.io": "^1.7.3",
     "tmi.js": "^1.1.2",
     "watson-developer-cloud": "^2.28.0"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }
