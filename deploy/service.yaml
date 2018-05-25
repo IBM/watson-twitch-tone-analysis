@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: tone-analysis
+spec:
+  selector:
+    app: tone-analysis
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
