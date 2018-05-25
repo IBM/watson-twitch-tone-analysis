@@ -1,6 +1,6 @@
 
 // Load Config File
-var config = require('./config.json');
+var config = require('./secrets/config.json');
 
 // Load libraries; instantiate express app and socket.io
 var express = require('express');
