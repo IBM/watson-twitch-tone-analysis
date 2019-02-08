@@ -71,21 +71,20 @@ io.on('connection', function(socket){
   });
 });
 
-app.param('twitch_channel', function (req, res, next, twitch_channel) {
-  console.log('CALLED ONLY ONCE');
+app.get('/channels', function (req, res, next) {
   // tell tmi to join the channel
   // set a timer so that tmi eventually leaves the channel
   // 2 minutes right now
+
+  var twitch_channel = req.query.twitch_channel;
   client.join(twitch_channel);
   var foo = setTimeout(function(){
     client.part(twitch_channel);
   }, 120000);
   next();
-});
 
-app.get('/channels/:twitch_channel', function (req, res, next) {
-  res.send('OK - Joined channel! Note, will leave channel in 2 minutes!');
-  // send frontend code
+  //res.send('OK - Joined channel! Note, will leave channel in 2 minutes!');
+  res.redirect('/')
   // template the frontend so it filters messages 
   // currently only sends ok, user needs to refresh main page to see results
 });
