@@ -74,13 +74,13 @@ io.on('connection', function(socket){
 app.get('/channels', function (req, res, next) {
   // tell tmi to join the channel
   // set a timer so that tmi eventually leaves the channel
-  // 2 minutes right now
+  // 5 minutes right now
 
   var twitch_channel = req.query.twitch_channel;
   client.join(twitch_channel);
   var foo = setTimeout(function(){
     client.part(twitch_channel);
-  }, 120000);
+  }, 300000);
   next();
 
   //res.send('OK - Joined channel! Note, will leave channel in 2 minutes!');
