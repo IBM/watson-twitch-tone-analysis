@@ -71,6 +71,25 @@ io.on('connection', function(socket){
   });
 });
 
+app.param('twitch_channel', function (req, res, next, twitch_channel) {
+  console.log('CALLED ONLY ONCE');
+  // tell tmi to join the channel
+  // set a timer so that tmi eventually leaves the channel
+  // 2 minutes right now
+  client.join(twitch_channel);
+  var foo = setTimeout(function(){
+    client.part(twitch_channel);
+  }, 120000);
+  next();
+});
+
+app.get('/channels/:twitch_channel', function (req, res, next) {
+  res.send('OK - Joined channel! Note, will leave channel in 2 minutes!');
+  // send frontend code
+  // template the frontend so it filters messages 
+  // currently only sends ok, user needs to refresh main page to see results
+});
+
 
 // When a chat message comes in, process it with watson tone analysis
 // and send that to any clients connected via websockets
@@ -82,5 +101,6 @@ client.on('chat', function(channel, user, message, self) {
       console.log(err);
     else
       io.emit('chat message', tone['document_tone']);
+      //io.emit('twitch_channel_" + twitch_channel, tone['document_tone']);
   });
 });
