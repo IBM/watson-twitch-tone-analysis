@@ -12,9 +12,9 @@ var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
 
 // Setup Watson Tone Analyzer
 var tone_analyzer = new ToneAnalyzerV3({
-  username: config.watson.username,
-  password: config.watson.password,
-  version_date: config.watson.version_date,
+  url: config.watson.new.url,
+  version: config.watson.version_date,
+  iam_apikey: config.watson.new.apikey
 });
 
 // Set up options for connection to twitch chat
