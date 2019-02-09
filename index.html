@@ -5,9 +5,6 @@
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
@@ -50,7 +47,11 @@
     <div class="container">
       <div class="page-header">
         <h1>Watson: Twitch Chat Tone Analysis</h1>
-        <p class="lead">Watson Tone analysis of twitch chat. Uses node, socket.io, tmi, and rickshaw. Github: https://github.com/nibalizer/watson-twitch-tone-analysis</p>
+        <p class="lead">Watson Tone analysis of twitch chat. Uses node, socket.io, tmi, and rickshaw. Github: https://github.com/ibm-dev/watson-twitch-tone-analysis</p>
+      <form action="/watson-twitch-tone-analysis/channels">
+        Watch a Twitch Channel (5 Minute Timeout):<br>
+        <input type="text" name="twitch_channel"><br>
+      </form>
       </div>
       <div class="col-md-4">
         <h2>Conscientiousness</h2>
@@ -102,16 +103,6 @@
       </div>
     </div>
 
-    <script>
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-      });
-    </script>
     <script>
     var tone_categories = [
        [ "Anger",  "Disgust",  "Fear", "Joy", "Sadness"],

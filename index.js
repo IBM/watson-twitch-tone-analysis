@@ -12,9 +12,9 @@ var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
 
 // Setup Watson Tone Analyzer
 var tone_analyzer = new ToneAnalyzerV3({
-  username: config.watson.username,
-  password: config.watson.password,
-  version_date: config.watson.version_date,
+  url: config.watson.new.url,
+  version: config.watson.version_date,
+  iam_apikey: config.watson.new.apikey
 });
 
 // Set up options for connection to twitch chat
@@ -44,10 +44,10 @@ client.on('connected', function(address, port) {
 
 // Serve any files in the 'vendor' directory as static resources
 // This is where js libraries for the client are stored
-app.use(express.static('vendor'))
+app.use('/watson-twitch-tone-analysis', express.static('vendor'))
 
 // Serve index.html on /
-app.get('/', function(req, res){
+app.get('/watson-twitch-tone-analysis', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
@@ -71,6 +71,24 @@ io.on('connection', function(socket){
   });
 });
 
+app.get('/watson-twitch-tone-analysis/channels', function (req, res, next) {
+  // tell tmi to join the channel
+  // set a timer so that tmi eventually leaves the channel
+  // 5 minutes right now
+
+  var twitch_channel = req.query.twitch_channel;
+  client.join(twitch_channel);
+  var foo = setTimeout(function(){
+    client.part(twitch_channel);
+  }, 300000);
+  next();
+
+  //res.send('OK - Joined channel! Note, will leave channel in 2 minutes!');
+  res.redirect('/watson-twitch-tone-analysis')
+  // template the frontend so it filters messages 
+  // currently only sends ok, user needs to refresh main page to see results
+});
+
 
 // When a chat message comes in, process it with watson tone analysis
 // and send that to any clients connected via websockets
@@ -82,5 +100,6 @@ client.on('chat', function(channel, user, message, self) {
       console.log(err);
     else
       io.emit('chat message', tone['document_tone']);
+      //io.emit('twitch_channel_" + twitch_channel, tone['document_tone']);
   });
 });
