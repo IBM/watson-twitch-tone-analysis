@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watson-twitch-tone-analysis
+  namespace: clean
+  labels:
+    app: watson-twitch-tone-analysis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+       app: watson-twitch-tone-analysis
+  template:
+    metadata:
+      labels:
+        app: watson-twitch-tone-analysis
+    spec:
+      containers:
+      - name: watson-twitch-tone-analysis
+        image: nibalizer/watson-twitch-tone-analysis:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: configjson
+          mountPath: "/usr/src/app/secrets"
+          readOnly: true
+      volumes:
+      - name: configjson
+        secret:
+          secretName: watson-twitch-tone-analysis-secret
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: watson-twitch-tone-analysis
+  namespace: clean
+spec:
+  selector:
+    app: watson-twitch-tone-analysis
+  ports:
+  - protocol: TCP
+    port: 3000
+    name: watson-twitch-tone-analysis
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: main-ingress
+  namespace: clean
+spec:
+  rules:
+  - host: apps.nibalizer.net
+    http:
+      paths:
+      - path: /watson-twitch-tone-analysis
+        backend:
+          serviceName: watson-twitch-tone-analysis
+          servicePort: 3000
+      - path: /socket.io/
+        backend:
+          serviceName: watson-twitch-tone-analysis
+          servicePort: 3000
+
