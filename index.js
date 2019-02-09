@@ -44,10 +44,10 @@ client.on('connected', function(address, port) {
 
 // Serve any files in the 'vendor' directory as static resources
 // This is where js libraries for the client are stored
-app.use(express.static('vendor'))
+app.use('/watson-twitch-tone-analysis', express.static('vendor'))
 
 // Serve index.html on /
-app.get('/', function(req, res){
+app.get('/watson-twitch-tone-analysis', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
 
@@ -71,7 +71,7 @@ io.on('connection', function(socket){
   });
 });
 
-app.get('/channels', function (req, res, next) {
+app.get('/watson-twitch-tone-analysis/channels', function (req, res, next) {
   // tell tmi to join the channel
   // set a timer so that tmi eventually leaves the channel
   // 5 minutes right now
@@ -84,7 +84,7 @@ app.get('/channels', function (req, res, next) {
   next();
 
   //res.send('OK - Joined channel! Note, will leave channel in 2 minutes!');
-  res.redirect('/')
+  res.redirect('/watson-twitch-tone-analysis')
   // template the frontend so it filters messages 
   // currently only sends ok, user needs to refresh main page to see results
 });
