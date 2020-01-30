@@ -16,8 +16,8 @@ spec:
         app: watson-twitch-tone-analysis
     spec:
       containers:
-      - name: watson-twitch-tone-analysis
-        image: nibalizer/watson-twitch-tone-analysis:latest
+      - name: watson-twitc-tone-analysis
+        image: us.icr.io/nibalizer/watson-twitch-tone-analysis
         imagePullPolicy: Always
         ports:
         - containerPort: 3000

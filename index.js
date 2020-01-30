@@ -6,6 +6,7 @@ var config = require('./secrets/config.json');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+var httpr = require('http')
 var io = require('socket.io')(http);
 var tmi = require('tmi.js');
 var ToneAnalyzerV3 = require('watson-developer-cloud/tone-analyzer/v3');
@@ -95,6 +96,33 @@ app.get('/watson-twitch-tone-analysis/channels', function (req, res, next) {
 // This is the meat of the proram
 client.on('chat', function(channel, user, message, self) {
   tone_analyzer.tone({ text: message },
+
+
+// talk to tensorflow
+
+let url = "http://max-toxic-comment-classifier:5000/model/metadata";
+
+httpr.get(url,(res) => {
+    let body = "";
+
+    res.on("data", (chunk) => {
+        body += chunk;
+    });
+
+    res.on("end", () => {
+        try {
+            let json = JSON.parse(body);
+            // do something with JSON
+            console.log(json)
+        } catch (error) {
+            console.error(error.message);
+        };
+    });
+
+}).on("error", (error) => {
+    console.error(error.message);
+});
+
   function(err, tone) {
     if (err)
       console.log(err);

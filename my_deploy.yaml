@@ -1,0 +1,48 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    annotations:
+    labels:
+      app: watson-twitch-tone-analysis
+    name: watson-twitch-tone-analysis
+    namespace: default
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: watson-twitch-tone-analysis
+    template:
+      metadata:
+        labels:
+          app: watson-twitch-tone-analysis
+      spec:
+        containers:
+        - image: us.icr.io/nibalizer/watson-twitch-tone-analysis:v2
+          imagePullPolicy: Always
+          name: watson-twitch-tone-analysis
+          ports:
+          - containerPort: 3000
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 3
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          volumeMounts:
+          - mountPath: /usr/src/app/secrets
+            name: configjson
+            readOnly: true
+        volumes:
+        - name: configjson
+          secret:
+            defaultMode: 420
+            secretName: watson-twitch-tone-analysis-secret
+kind: List
